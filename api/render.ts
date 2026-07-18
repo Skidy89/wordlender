@@ -1,6 +1,14 @@
 import { GridRenderer } from "../src/render/render.js";
 import type { Cell } from "../src/render/types.js";
-
+const renderer = new GridRenderer({
+  rows: 6,
+  cols: 5,
+  tileSize: 62,
+  gap: 6,
+  padding: 12,
+  background: "#000",
+  scale: 2,
+});
 type RequestBody = {
   answer: string;
   guesses: string[];
@@ -52,9 +60,7 @@ export async function POST(req: Request) {
   const evaluations = body.guesses.map((g) =>
     g ? evaluateGuess(body.answer, g) : null
   );
-  console.log(body);
-  console.log(evaluations);
-  console.log(cells);
+
 
   for (let y = 0; y < 6; y++) {
     const row = evaluations[y] || null;
@@ -69,19 +75,30 @@ export async function POST(req: Request) {
       });
     }
   }
-
-  const renderer = new GridRenderer({
-    rows: 6,
-    cols: 5,
-    tileSize: 62,
-    gap: 6,
-    padding: 12,
-    background: "#000",
-    scale: 2,
-  });
-
   const stream = await renderer.render(cells);
 
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+export async function GET() {
+  const cells: Cell[] = [];
+  for (let y = 0; y < 6; y++) {
+    for (let x = 0; x < 5; x++) {
+      cells.push({
+        x,
+        y,
+        text: "",
+        fill: "#3a3a3c",
+        color: "#fff",
+      });
+    }
+  }
+  const stream = await renderer.render(cells);
   return new Response(stream, {
     headers: {
       "Content-Type": "image/png",
