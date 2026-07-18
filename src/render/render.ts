@@ -100,7 +100,7 @@ y="${y + tileSize / 2}"
 font-size="${fontSize}"
 font-weight="${cell.fontWeight ?? 700}"
 fill="${cell.color ?? "#000"}"
-font-family="Inter"
+font-family="sans-serif"
 text-anchor="middle"
 dominant-baseline="central">
 ${parseXML(cell.text)}
