@@ -1,7 +1,9 @@
 import sharp from "sharp";
 import type { Cell, GridOptions } from "./types.js";
 import { Readable } from "stream";
+import fs from "node:fs";
 
+const font = fs.readFileSync("./fonts/inter-bold.ttf", "base64");
 export class GridRenderer {
   constructor(private readonly options: Required<GridOptions>) {}
 
@@ -29,12 +31,23 @@ export class GridRenderer {
       svg += this.drawCell(cell, sTile, sGap, sPad, scale);
     }
 
-    const image = `
+const image = `
 <svg
 xmlns="http://www.w3.org/2000/svg"
 width="${width}"
 height="${height}"
 viewBox="0 0 ${width} ${height}">
+
+<style>
+@font-face {
+  font-family: "Inter";
+  src: url(data:font/ttf;base64,${font}) format("truetype");
+}
+
+text {
+  font-family: "Inter";
+}
+</style>
 
 <rect
 width="100%"
@@ -83,7 +96,7 @@ y="${y + tileSize / 2}"
 font-size="${fontSize}"
 font-weight="${cell.fontWeight ?? 700}"
 fill="${cell.color ?? "#000"}"
-font-family="Arial, Helvetica, sans-serif"
+font-family="Inter"
 text-anchor="middle"
 dominant-baseline="central">
 ${parseXML(cell.text)}
