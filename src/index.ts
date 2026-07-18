@@ -1,6 +1,6 @@
 import { Readable } from "node:stream";
 import fs from "node:fs";
-import { font } from "../fonts/font.js";
+
 
 const response = await fetch(
  "https://wordlender.vercel.app/api/render",
@@ -21,7 +21,7 @@ const response = await fetch(
   })
  }
 );
-console.log(font)
+
 if (!response.ok) {
   console.log("Status:", response.status);
   console.log("Headers:", Object.fromEntries(response.headers));

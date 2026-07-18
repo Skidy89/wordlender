@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/render/render.ts": {
+      "includeFiles": "fonts/**"
+    },
+    "api/**": {
+      "includeFiles": "fonts/**"
+    }
+  }
+}
