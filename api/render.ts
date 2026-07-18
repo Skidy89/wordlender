@@ -1,86 +1,88 @@
 import { GridRenderer } from "../src/render/render.js";
+import type { Cell } from "../src/render/types.js";
 
-type Guess = { word: string };
-type RequestBody = { answer: string; guesses: string[] };
+type RequestBody = {
+  answer: string;
+  guesses: string[];
+};
 
-function evaluateGuess(answer: string, guess: string) {
-    const upperAnswer = answer.toUpperCase();
-    const upperGuess = guess.toUpperCase();
-    const result: Array<{ char: string; color: string }> = [];
-    const answerCount: Record<string, number> = {};
+type EvalResult = { text: string; color: string | null };
 
-    for (const ch of upperAnswer) {
-        answerCount[ch] = (answerCount[ch] || 0) + 1;
+function evaluateGuess(answer: string, guess: string): EvalResult[] {
+  const upperAnswer = answer.toUpperCase();
+  const upperGuess = guess.toUpperCase();
+  const answerCount: Record<string, number> = {};
+
+  for (const ch of upperAnswer) {
+    answerCount[ch] = (answerCount[ch] || 0) + 1;
+  }
+
+  const result: EvalResult[] = [];
+
+  for (let i = 0; i < 5; i++) {
+    const char = upperGuess[i] || "";
+    if (char && char === upperAnswer[i]) {
+      result[i] = { text: char, color: "#6aaa64" };
+      if (answerCount[char])
+      answerCount[char]--;
+    } else {
+      result[i] = { text: char, color: null };
     }
+  }
 
-    const temp = new Array(5).fill(null);
-
-    for (let i = 0; i < 5; i++) {
-        const char = upperGuess[i] || "";
-        if (char && char === upperAnswer[i]) {
-            temp[i] = { char, color: "#6aaa64" };
-            if (!answerCount[char]) {
-                answerCount[char] = 0;
-            }
-            answerCount[char]--;
-        } else {
-            temp[i] = { char, color: null };
-        }
+  for (let i = 0; i < 5; i++) {
+    if (result[i]?.color === null) {
+      const char = result[i]?.text;
+      if (char && answerCount[char] && answerCount[char] > 0) {
+        result[i]!.color = "#c9b458";
+        answerCount[char]--;
+      } else {
+        result[i]!.color = "#787c7e";
+      }
     }
+  }
 
-    for (let i = 0; i < 5; i++) {
-        if (temp[i].color === null) {
-            const char = temp[i].char;
-            if (char && answerCount[char] && answerCount[char] > 0) {
-                temp[i].color = "#c9b458";
-                answerCount[char]--;
-            } else {
-                temp[i].color = "#787c7e";
-            }
-        }
-    }
-
-    return temp;
+  return result;
 }
 
 export async function POST(req: Request) {
-    const body = (await req.json()) as RequestBody;
+  const body = (await req.json()) as RequestBody;
 
-    const cells: any[] = [];
-    const evaluations = body.guesses.map((g) =>
-        g ? evaluateGuess(body.answer, g) : null
-    );
+  const cells: Cell[] = [];
+  const evaluations = body.guesses.map((g) =>
+    g ? evaluateGuess(body.answer, g) : null
+  );
 
-    for (let y = 0; y < 6; y++) {
-        const row = evaluations[y] || null;
-        for (let x = 0; x < 5; x++) {
-            const cell = row ? row[x] : null;
-            cells.push({
-                x,
-                y,
-                text: cell?.char || "",
-                fill: cell?.color || "#3a3a3c",
-                color: "#fff",
-            });
-        }
+  for (let y = 0; y < 6; y++) {
+    const row = evaluations[y] || null;
+    for (let x = 0; x < 5; x++) {
+      const cell = row ? row[x] : null;
+      cells.push({
+        x,
+        y,
+        text: cell?.text || "",
+        fill: cell?.color || "#3a3a3c",
+        color: "#fff",
+      });
     }
+  }
 
-    const renderer = new GridRenderer({
-        rows: 6,
-        cols: 5,
-        tileSize: 62,
-        gap: 6,
-        padding: 12,
-        background: "#000",
-        scale: 2,
-    });
+  const renderer = new GridRenderer({
+    rows: 6,
+    cols: 5,
+    tileSize: 62,
+    gap: 6,
+    padding: 12,
+    background: "#000",
+    scale: 2,
+  });
 
-    const stream = await renderer.render(cells);
+  const stream = await renderer.render(cells);
 
-    return new Response(stream, {
-        headers: {
-            "Content-Type": "image/png",
-            "Cache-Control": "no-store",
-        },
-    });
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "no-store",
+    },
+  });
 }
