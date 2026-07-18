@@ -1,4 +1,4 @@
-import { GridRenderer } from "../render/render.js";
+import { GridRenderer } from "../src/render/render.js";
 
 export async function POST(req: Request) {
 

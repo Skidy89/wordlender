@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "dist/api/*.js": {
-      "runtime": "@vercel/node"
-    }
-  }
-}
