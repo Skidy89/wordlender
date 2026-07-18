@@ -86,19 +86,39 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+  const body: RequestBody = {
+    answer: "JANED",
+    guesses: [
+      "HELLO",
+      "WORLD",
+      "TESTS",
+      "JANED",
+    ],
+  };
+
   const cells: Cell[] = [];
+  const evaluations = body.guesses.map((g) =>
+    g ? evaluateGuess(body.answer, g) : null
+  );
+
   for (let y = 0; y < 6; y++) {
+    const row = evaluations[y] || null;
+
     for (let x = 0; x < 5; x++) {
+      const cell = row ? row[x] : null;
+
       cells.push({
         x,
         y,
-        text: "",
-        fill: "#3a3a3c",
+        text: cell?.text || "",
+        fill: cell?.color || "#3a3a3c",
         color: "#fff",
       });
     }
   }
+
   const stream = await renderer.render(cells);
+
   return new Response(stream, {
     headers: {
       "Content-Type": "image/png",
