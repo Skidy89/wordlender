@@ -52,6 +52,9 @@ export async function POST(req: Request) {
   const evaluations = body.guesses.map((g) =>
     g ? evaluateGuess(body.answer, g) : null
   );
+  console.log(body);
+  console.log(evaluations);
+  console.log(cells);
 
   for (let y = 0; y < 6; y++) {
     const row = evaluations[y] || null;
