@@ -1,0 +1,32 @@
+{
+  "name": "basic-wordle",
+  "version": "0.0.1",
+  "description": "a basic wordle with sharp",
+  "keywords": [
+    "wordle",
+    "api",
+    "vercel"
+  ],
+  "homepage": "https://github.com/skidy89/basic-wordle#readme",
+  "bugs": {
+    "url": "https://github.com/skidy89/basic-wordle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skidy89/basic-wordle.git"
+  },
+  "license": "MIT",
+  "author": "skidy89",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1"
+  }
+}
