@@ -3,7 +3,7 @@ import type { Cell, GridOptions } from "./types.js";
 import { Readable } from "stream";
 import fs from "node:fs";
 
-const font = fs.readFileSync("./fonts/inter-bold.ttf", "base64");
+const font = fs.readFileSync("../../fonts/inter-bold.ttf", "base64");
 export class GridRenderer {
   constructor(private readonly options: Required<GridOptions>) {}
 
