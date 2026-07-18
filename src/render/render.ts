@@ -1,14 +1,22 @@
 import sharp from "sharp";
 import type { Cell, GridOptions } from "./types.js";
 import { Readable } from "stream";
-import fs from "node:fs";
+import path from "node:path";
 import { font } from "../../fonts/font.js";
-
+import fs from "node:fs";
 
 export class GridRenderer {
   constructor(private readonly options: Required<GridOptions>) {}
 
   async render(cells: Cell[]) {
+    const fontsDir = path.join(process.cwd(), "fonts");
+    process.env.FONTCONFIG_PATH = fontsDir;
+    process.env.FONTCONFIG_FILE = path.join(fontsDir, "fonts.conf");
+    const cacheDir = "/tmp/fonts-cache";
+    if (!fs.existsSync(cacheDir)) {
+      fs.mkdirSync(cacheDir, { recursive: true });
+    }
+
     const {
       rows,
       cols,
@@ -32,7 +40,7 @@ export class GridRenderer {
       svg += this.drawCell(cell, sTile, sGap, sPad, scale);
     }
 
-const image = `
+    const image = `
 <svg
 xmlns="http://www.w3.org/2000/svg"
 width="${width}"
@@ -63,8 +71,9 @@ ${svg}
 </svg>
 `;
 
-    const buffer = await sharp(Buffer.from(image), { density: 300 })
-      .png({ quality: 100 })
+    const buffer = await sharp(Buffer.from(image), { density: 300 }).png({
+      quality: 100,
+    });
     return Readable.toWeb(buffer) as ReadableStream<Uint8Array>;
   }
 

@@ -18,8 +18,7 @@ function evaluateGuess(answer: string, guess: string): EvalResult[] {
     const char = upperGuess[i] || "";
     if (char && char === upperAnswer[i]) {
       result[i] = { text: char, color: "#6aaa64" };
-      if (answerCount[char])
-      answerCount[char]--;
+      if (answerCount[char]) answerCount[char]--;
     } else {
       result[i] = { text: char, color: null };
     }
@@ -40,25 +39,17 @@ function evaluateGuess(answer: string, guess: string): EvalResult[] {
   return result;
 }
 
-const response = await fetch(
- "https://wordlender.vercel.app/api/render",
- {
-  method:"POST",
-  headers:{
-   "Content-Type":"application/json"
+const response = await fetch("https://wordlender.vercel.app/api/render", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
   },
-  body:JSON.stringify({
+  body: JSON.stringify({
+    answer: "JANED",
 
-    answer:"JANED",
-
-    guesses:[
-      "WORLD",
-      "HOUSE"
-    ]
-
-  })
- }
-);
+    guesses: ["WORLD", "HOUSE"],
+  }),
+});
 
 if (!response.ok) {
   console.log("Status:", response.status);
@@ -74,19 +65,13 @@ const file = fs.createWriteStream("output.png");
 nodeStream.pipe(file);
 
 await new Promise((resolve, reject) => {
-    file.on("finish", resolve);
-    file.on("error", reject);
+  file.on("finish", resolve);
+  file.on("error", reject);
 });
 const body = {
   answer: "JANED",
-  guesses: [
-    "WORLD",
-    "HOUSE",
-    "GUESS",
-    "LARPE",
-    "JANED"
-  ]
-}
+  guesses: ["WORLD", "HOUSE", "GUESS", "LARPE", "JANED"],
+};
 const renderer = new GridRenderer({
   rows: 6,
   cols: 5,
@@ -97,33 +82,33 @@ const renderer = new GridRenderer({
   scale: 2,
 });
 const cells: Cell[] = [];
-  const evaluations = body.guesses.map((g) =>
-    g ? evaluateGuess(body.answer, g) : null
-  );
+const evaluations = body.guesses.map((g) =>
+  g ? evaluateGuess(body.answer, g) : null,
+);
 
-  for (let y = 0; y < 6; y++) {
-    const row = evaluations[y] || null;
+for (let y = 0; y < 6; y++) {
+  const row = evaluations[y] || null;
 
-    for (let x = 0; x < 5; x++) {
-      const cell = row ? row[x] : null;
+  for (let x = 0; x < 5; x++) {
+    const cell = row ? row[x] : null;
 
-      cells.push({
-        x,
-        y,
-        text: cell?.text || "",
-        fill: cell?.color || "#3a3a3c",
-        color: "#fff",
-      });
-    }
+    cells.push({
+      x,
+      y,
+      text: cell?.text || "",
+      fill: cell?.color || "#3a3a3c",
+      color: "#fff",
+    });
   }
+}
 
-  const stream = await renderer.render(cells);
+const stream = await renderer.render(cells);
 
-  const file2 = fs.createWriteStream("output2.png");
-  const webStream = Readable.from(stream);
+const file2 = fs.createWriteStream("output2.png");
+const webStream = Readable.from(stream);
 webStream.pipe(file2);
 
 await new Promise((resolve, reject) => {
-    file2.on("finish", resolve);
-    file2.on("error", reject);
+  file2.on("finish", resolve);
+  file2.on("error", reject);
 });

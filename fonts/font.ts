@@ -1,11 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const fontPath = path.resolve(
-  process.cwd(),
-  "fonts/inter-bold.ttf"
-);
+const fontPath = path.resolve(process.cwd(), "fonts/inter-bold.ttf");
 
-export const font = fs.readFileSync(
-    fontPath, "base64"
-);
+export const font = fs.readFileSync(fontPath, "base64");

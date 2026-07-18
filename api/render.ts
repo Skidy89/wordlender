@@ -31,8 +31,7 @@ function evaluateGuess(answer: string, guess: string): EvalResult[] {
     const char = upperGuess[i] || "";
     if (char && char === upperAnswer[i]) {
       result[i] = { text: char, color: "#6aaa64" };
-      if (answerCount[char])
-      answerCount[char]--;
+      if (answerCount[char]) answerCount[char]--;
     } else {
       result[i] = { text: char, color: null };
     }
@@ -58,9 +57,8 @@ export async function POST(req: Request) {
 
   const cells: Cell[] = [];
   const evaluations = body.guesses.map((g) =>
-    g ? evaluateGuess(body.answer, g) : null
+    g ? evaluateGuess(body.answer, g) : null,
   );
-
 
   for (let y = 0; y < 6; y++) {
     const row = evaluations[y] || null;
@@ -88,17 +86,12 @@ export async function POST(req: Request) {
 export async function GET() {
   const body: RequestBody = {
     answer: "JANED",
-    guesses: [
-      "HELLO",
-      "WORLD",
-      "TESTS",
-      "JANED",
-    ],
+    guesses: ["HELLO", "WORLD", "TESTS", "JANED"],
   };
 
   const cells: Cell[] = [];
   const evaluations = body.guesses.map((g) =>
-    g ? evaluateGuess(body.answer, g) : null
+    g ? evaluateGuess(body.answer, g) : null,
   );
 
   for (let y = 0; y < 6; y++) {
