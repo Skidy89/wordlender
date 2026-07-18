@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "src/render/render.ts": {
-      "includeFiles": "fonts/**"
-    }
-  }
-}
