@@ -43,10 +43,13 @@ viewBox="0 0 ${width} ${height}">
 @font-face {
   font-family: "Inter";
   src: url(data:font/ttf;base64,${font}) format("truetype");
+  font-weight: 700;
+  font-style: normal;
 }
 
 text {
   font-family: "Inter";
+  font-weight: 700;
 }
 </style>
 
