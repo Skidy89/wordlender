@@ -62,7 +62,7 @@ ${svg}
 
     const buffer = await sharp(Buffer.from(image), { density: 300 })
       .png({ quality: 100 })
-    return Readable.toWeb(Readable.from(buffer)) as ReadableStream<Uint8Array>;
+    return Readable.toWeb(buffer) as ReadableStream<Uint8Array>;
   }
 
   private drawCell(

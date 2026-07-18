@@ -7,5 +7,5 @@ const fontPath = path.resolve(
 );
 
 export const font = fs.readFileSync(
-    fontPath
+    fontPath, "base64"
 );
