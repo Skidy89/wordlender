@@ -15,3 +15,14 @@ export async function POST(req: Request) {
         },
     });
 }
+
+export async function GET(req: Request) {
+
+    return new Response("please provide a request body", {
+        status: 400,
+        headers: {
+            "Content-Type": "text/plain",
+            "Cache-Control": "no-store",
+        },
+    });
+}
