@@ -51,7 +51,7 @@ function evaluateGuess(answer: string, guess: string): EvalResult[] {
 
   return result;
 }
-
+const cache = new Map<string, Response>();
 export async function POST(req: Request) {
   const body = (await req.json()) as RequestBody;
 
@@ -85,37 +85,24 @@ export async function POST(req: Request) {
 
 export async function GET() {
   const body: RequestBody = {
-    answer: "JANED",
-    guesses: ["HELLO", "WORLD", "TESTS", "JANED"],
+    answer: "",
+    guesses: [],
   };
-
-  const cells: Cell[] = [];
-  const evaluations = body.guesses.map((g) =>
-    g ? evaluateGuess(body.answer, g) : null,
-  );
-
-  for (let y = 0; y < 6; y++) {
-    const row = evaluations[y] || null;
-
-    for (let x = 0; x < 5; x++) {
-      const cell = row ? row[x] : null;
-
-      cells.push({
-        x,
-        y,
-        text: cell?.text || "",
-        fill: cell?.color || "#3a3a3c",
-        color: "#fff",
-      });
-    }
+  if (cache.has("default")) {
+    return cache.get("default")!.clone();
   }
 
-  const stream = await renderer.render(cells);
+  const cells: Cell[] = [];
 
-  return new Response(stream, {
+  const stream = await renderer.render(cells);
+  const response = new Response(stream, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "no-store",
     },
   });
+  if (body.answer === "" && body.guesses.length === 0) {
+    cache.set("default", response.clone());
+  }
+  return response;
 }

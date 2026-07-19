@@ -70,7 +70,7 @@ await new Promise((resolve, reject) => {
 });
 const body = {
   answer: "JANED",
-  guesses: ["WORLD", "HOUSE", "GUESS", "LARPE", "JANED"],
+  guesses: [],
 };
 const renderer = new GridRenderer({
   rows: 6,

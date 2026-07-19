@@ -71,8 +71,9 @@ ${svg}
 </svg>
 `;
 
-    const buffer = await sharp(Buffer.from(image), { density: 300 }).png({
-      quality: 100,
+    const buffer = await sharp(Buffer.from(image), { density: 72 }).png({
+      quality: 50,
+      compressionLevel: 9,
     });
     return Readable.toWeb(buffer) as ReadableStream<Uint8Array>;
   }
